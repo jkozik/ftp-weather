@@ -1,0 +1,6 @@
+# Don't commit actual secrets
+ftp-secrets.yaml
+
+# Only commit the template
+!ftp-secrets.yaml.template
+bck/

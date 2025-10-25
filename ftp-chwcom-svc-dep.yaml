@@ -1,0 +1,138 @@
+---
+# chwcom FTP Server Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ftp-chwcom
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ftp-chwcom
+  template:
+    metadata:
+      labels:
+        app: ftp-chwcom
+    spec:
+      containers:
+      - name: vsftpd
+        image: fauria/vsftpd:latest
+        ports:
+        - containerPort: 20
+          name: ftp-data
+        - containerPort: 21
+          name: ftp-control
+        - containerPort: 31100
+          name: pasv-min
+        - containerPort: 31110
+          name: pasv-max
+        env:
+        - name: FTP_USER
+          value: "chwcom"
+        - name: FTP_PASS
+          valueFrom:
+            secretKeyRef:
+              name: ftp-passwords
+              key: chwcom-password          
+        - name: PASV_ADDRESS
+          value: "192.168.100.204"
+        - name: PASV_MIN_PORT
+          value: "31100"
+        - name: PASV_MAX_PORT
+          value: "31110"
+        - name: FILE_OPEN_MODE
+          value: "0644"          
+        - name: LOCAL_UMASK
+          value: "022"          
+        volumeMounts:
+        - name: ftp-data
+          mountPath: /home/vsftpd/chwcom
+          subPath: chwcom
+        securityContext:
+          capabilities:
+            add:
+              - NET_BIND_SERVICE
+      volumes:
+      - name: ftp-data
+        persistentVolumeClaim:
+          claimName: weather-ftp-pvc
+
+---
+# chwcom FTP Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftp-chwcom
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: ftp-chwcom
+  ports:
+  - name: ftp-data
+    port: 20
+    targetPort: 20
+    nodePort: 30120
+    protocol: TCP
+  - name: ftp-control
+    port: 21
+    targetPort: 21
+    nodePort: 30121
+    protocol: TCP
+  - name: pasv-1
+    port: 31100
+    targetPort: 31100
+    nodePort: 31100
+    protocol: TCP
+  - name: pasv-2
+    port: 31101
+    targetPort: 31101
+    nodePort: 31101
+    protocol: TCP
+  - name: pasv-3
+    port: 31102
+    targetPort: 31102
+    nodePort: 31102
+    protocol: TCP
+  - name: pasv-4
+    port: 31103
+    targetPort: 31103
+    nodePort: 31103
+    protocol: TCP
+  - name: pasv-5
+    port: 31104
+    targetPort: 31104
+    nodePort: 31104
+    protocol: TCP
+  - name: pasv-6
+    port: 31105
+    targetPort: 31105
+    nodePort: 31105
+    protocol: TCP
+  - name: pasv-7
+    port: 31106
+    targetPort: 31106
+    nodePort: 31106
+    protocol: TCP
+  - name: pasv-8
+    port: 31107
+    targetPort: 31107
+    nodePort: 31107
+    protocol: TCP
+  - name: pasv-9
+    port: 31108
+    targetPort: 31108
+    nodePort: 31108
+    protocol: TCP
+  - name: pasv-10
+    port: 31109
+    targetPort: 31109
+    nodePort: 31109
+    protocol: TCP
+  - name: pasv-11
+    port: 31110
+    targetPort: 31110
+    nodePort: 31110
+    protocol: TCP
+

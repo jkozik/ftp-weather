@@ -1,0 +1,31 @@
+---
+# Persistent Volume - NFS backed storage
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: weather-ftp-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 192.168.100.153
+    path: /home/nfs/weather-stations
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-weather
+
+---
+# Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: weather-ftp-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: nfs-weather
