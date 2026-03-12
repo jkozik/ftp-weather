@@ -18,6 +18,15 @@ spec:
       containers:
       - name: vsftpd
         image: fauria/vsftpd:latest
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+            ephemeral-storage: 100M
+          limits:
+            cpu: 500m
+            memory: 256Mi
+            ephemeral-storage: 200M        
         ports:
         - containerPort: 20
           name: ftp-data
