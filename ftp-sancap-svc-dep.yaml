@@ -45,7 +45,7 @@ spec:
               name: ftp-passwords
               key: sancap-password
         - name: PASV_ADDRESS
-          value: "192.168.100.204"
+          value: "192.168.100.208"
         - name: PASV_MIN_PORT
           value: "31300"
         - name: PASV_MAX_PORT
