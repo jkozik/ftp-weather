@@ -1,0 +1,146 @@
+---
+# sancapvueweewx FTP Server Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ftp-sancapvueweewx
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ftp-sancapvueweewx
+  template:
+    metadata:
+      labels:
+        app: ftp-sancapvueweewx
+    spec:
+      containers:
+      - name: vsftpd
+        image: fauria/vsftpd:latest
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+            ephemeral-storage: 100M
+          limits:
+            cpu: 500m
+            memory: 256Mi
+            ephemeral-storage: 200M
+        ports:
+        - containerPort: 20
+          name: ftp-data
+        - containerPort: 21
+          name: ftp-control
+        - containerPort: 31500
+          name: pasv-min
+        - containerPort: 31510
+          name: pasv-max
+        env:
+        - name: FTP_USER
+          value: "sancapvueweewx"
+        - name: FTP_PASS
+          valueFrom:
+            secretKeyRef:
+              name: ftp-passwords
+              key: sancapvueweewx-password
+        - name: PASV_ADDRESS
+          value: "192.168.100.208"
+        - name: PASV_MIN_PORT
+          value: "31500"
+        - name: PASV_MAX_PORT
+          value: "31510"
+        - name: FILE_OPEN_MODE
+          value: "0644"
+        - name: LOCAL_UMASK
+          value: "022"
+        volumeMounts:
+        - name: ftp-data
+          mountPath: /home/vsftpd/sancapvueweewx
+          subPath: sancapvueweewx
+        securityContext:
+          capabilities:
+            add:
+              - NET_BIND_SERVICE
+      volumes:
+      - name: ftp-data
+        persistentVolumeClaim:
+          claimName: weather-ftp-pvc
+
+---
+# sancapvueweewx FTP Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftp-sancapvueweewx
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: ftp-sancapvueweewx
+  ports:
+  - name: ftp-data
+    port: 20
+    targetPort: 20
+    nodePort: 30520
+    protocol: TCP
+  - name: ftp-control
+    port: 21
+    targetPort: 21
+    nodePort: 30521
+    protocol: TCP
+  - name: pasv-1
+    port: 31500
+    targetPort: 31500
+    nodePort: 31500
+    protocol: TCP
+  - name: pasv-2
+    port: 31501
+    targetPort: 31501
+    nodePort: 31501
+    protocol: TCP
+  - name: pasv-3
+    port: 31502
+    targetPort: 31502
+    nodePort: 31502
+    protocol: TCP
+  - name: pasv-4
+    port: 31503
+    targetPort: 31503
+    nodePort: 31503
+    protocol: TCP
+  - name: pasv-5
+    port: 31504
+    targetPort: 31504
+    nodePort: 31504
+    protocol: TCP
+  - name: pasv-6
+    port: 31505
+    targetPort: 31505
+    nodePort: 31505
+    protocol: TCP
+  - name: pasv-7
+    port: 31506
+    targetPort: 31506
+    nodePort: 31506
+    protocol: TCP
+  - name: pasv-8
+    port: 31507
+    targetPort: 31507
+    nodePort: 31507
+    protocol: TCP
+  - name: pasv-9
+    port: 31508
+    targetPort: 31508
+    nodePort: 31508
+    protocol: TCP
+  - name: pasv-10
+    port: 31509
+    targetPort: 31509
+    nodePort: 31509
+    protocol: TCP
+  - name: pasv-11
+    port: 31510
+    targetPort: 31510
+    nodePort: 31510
+    protocol: TCP
